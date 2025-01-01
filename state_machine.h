@@ -80,7 +80,8 @@ public:
 
     void PassEventData(EventData *event_data, State<EventType> *state)
     {
-        state->pass_event_data(event_data);
+        if (this->m_state != state)
+            state->pass_event_data(event_data);
     }
 
     void run() { m_state->run(); }
