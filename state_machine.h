@@ -33,7 +33,7 @@ public:
         _handle_event(event, event_data);
     }
     void run() { _run(); }
-    void pass_event_data(EventData *event_data) { _pass_event_data(event_data); }
+    void receive_data(EventData *event_data) { _receive_data(event_data); }
 
 protected:
     State() = default;
@@ -46,7 +46,7 @@ private:
     virtual void _handle_event(const EventType event, EventData *event_data = nullptr) = 0;
     virtual void _run() {}
     virtual bool _check_guard_condition(const EventType event) { return true; }
-    virtual void _pass_event_data(EventData *event_data) {}
+    virtual void _receive_data(EventData *event_data) {}
 };
 
 template <typename EventType>
@@ -81,7 +81,7 @@ public:
     void PassEventData(EventData *event_data, State<EventType> *state)
     {
         if (this->m_state != state)
-            state->pass_event_data(event_data);
+            state->receive_data(event_data);
     }
 
     void run() { m_state->run(); }
