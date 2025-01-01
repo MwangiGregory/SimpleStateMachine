@@ -78,10 +78,9 @@ public:
         this->m_state->handle_event(event, event_data);
     }
 
-    // Should be called after the TransitionTo method
-    void PassEventData(EventData *event_data)
+    void PassEventData(EventData *event_data, State<EventType> *state)
     {
-        this->m_state->pass_event_data(event_data);
+        state->pass_event_data(event_data);
     }
 
     void run() { m_state->run(); }
