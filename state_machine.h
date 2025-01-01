@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
+class EventData
+{
+public:
+    virtual ~EventData() = default;
+};
+
 template <typename EventType>
 class StateMachine;
 
@@ -20,11 +26,11 @@ public:
 
     void on_entry() { _on_entry(); }
     void on_exit() { _on_exit(); }
-    void handle_event(const EventType event)
+    void handle_event(const EventType event, EventData *event_data = nullptr)
     {
         if (_check_guard_condition(event) == false)
             return;
-        _handle_event(event);
+        _handle_event(event, event_data);
     }
     void run() { _run(); }
 
@@ -36,7 +42,7 @@ protected:
 private:
     virtual void _on_entry() {}
     virtual void _on_exit() {}
-    virtual void _handle_event(const EventType event) = 0;
+    virtual void _handle_event(const EventType event, EventData *event_data = nullptr) = 0;
     virtual void _run() {}
     virtual bool _check_guard_condition(const EventType event) { return true; }
 };
@@ -65,14 +71,20 @@ public:
         }
     }
 
-    void FeedEvent(const EventType event) { _feed_event(event); }
+    void FeedEvent(const EventType event, EventData *event_data = nullptr)
+    {
+        _feed_event(event, event_data);
+    }
+
     void run() { m_state->run(); }
 
 private:
-    virtual void _feed_event(const EventType event) { this->m_state->handle_event(event); }
+    virtual void _feed_event(const EventType event, EventData *event_data = nullptr)
+    {
+        this->m_state->handle_event(event, event_data);
+    }
 
     State<EventType> *m_state{nullptr};
 };
 
 #endif // STATE_MACHINE_H
-
